@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { COURSES_URL, PROXY_URL } from "./constants";
+import { COURSES_URL } from "./constants";
 import { queryCanvas } from "./data";
-import Skeleton from 'react-loading-skeleton'
-
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import {BallTriangle, Oval} from 'react-loader-spinner'
 type ILoadingStates = boolean | { error: string };
 
 export const App = () => {
@@ -31,7 +31,7 @@ export const App = () => {
                 apiKey,
                 true
             );
-            const start = new Date(2021, 10,1);
+            const start = new Date(2021, 10, 1);
             // resp = resp.filter((v) => {
             //     const datadate = new Date(v.created_at);
             //     return datadate > start ? true : false
@@ -60,12 +60,13 @@ export const App = () => {
             ) : (
                 <p>you are authenticated</p>
             )}
-            {classes.length ? <ul>
-                    { classes.map((c) => {
-                          return <li key={c.id}>{c.course_code}</li>;
-                      })
-}
-            </ul> : <Skeleton count={5}/>}
+            {classes.length ? (
+                <ul>
+                    {classes.map((c) => {
+                        return <li key={c.id}>{c.course_code}</li>;
+                    })}
+                </ul>
+            ) : <BallTriangle color="#F00000" height={120} width={120} />}
         </div>
     );
 };
