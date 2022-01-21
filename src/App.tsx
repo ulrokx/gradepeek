@@ -1,13 +1,19 @@
 import { useEffect, useState } from "react";
-import { COURSES_URL, ME_URL } from "./constants";
+import { COURSES_URL, ME_URL, TODOS_URL } from "./constants";
 import { queryCanvas } from "./data";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { BallTriangle, Oval } from "react-loader-spinner";
-import { UserBlip } from "./UserBlip";
-import { Courses } from "./Courses";
-import { Tabs } from "./Tabs";
+import { UserBlip } from "./components/UserBlip";
+import { Courses } from "./components/Courses";
+import { Tabs } from "./components/Tabs";
+import { Todos } from "./components/Todos";
 type ILoadingStates = boolean | { error: string };
 type ITabs = "Courses" | "Todos" | "Grades";
+const params = new URLSearchParams([
+    ["page", "1"],
+    ["per_page", "50"],
+]);
+const empty = new URLSearchParams();
 export const App = () => {
     const [classes, setClasses] = useState([]);
     const [apiKey, setApiKey] = useState("");
@@ -15,6 +21,7 @@ export const App = () => {
     const [apiInput, setApiInput] = useState("");
     const [user, setUser] = useState({});
     const [tab, setTab] = useState<ITabs>("Courses");
+    const [todos, setTodos] = useState([]);
 
     useEffect(() => {
         chrome.storage.sync.get(["capikey"], (res) => {
@@ -28,25 +35,27 @@ export const App = () => {
         const getClasses = async () => {
             chrome.storage.sync.set({ capikey: apiKey });
             setLoading(true);
-            const empty = new URLSearchParams();
-            const params = new URLSearchParams([
-                ["page", "1"],
-                ["per_page", "50"],
-            ]);
             let resp: Array<any> = await queryCanvas(
                 params,
                 COURSES_URL,
                 apiKey
             );
-            let user = await queryCanvas(empty, ME_URL, apiKey, false);
+            let user: any = await queryCanvas(empty, ME_URL, apiKey, false);
             setUser(user);
             resp = resp.filter((v) => {
                 return v.enrollment_term_id == 456 ? true : false;
             });
             setClasses(resp);
-            setLoading(false);
+        };
+        const getTodos = async () => {
+            setLoading(true);
+            let resp: any = await queryCanvas(empty, TODOS_URL, apiKey);
+            resp = resp.filter((r) => r.type == "submitting");
+            setTodos(resp);
         };
         getClasses();
+        getTodos();
+        setLoading(false);
     }, [apiKey]);
     useEffect(() => {
         if (apiInput.length === 69) {
@@ -71,8 +80,14 @@ export const App = () => {
                 <UserBlip user={user} />
             )}
             <Tabs selected={tab} changeTab={(v: ITabs) => setTab(v)} />
-            {classes.length ? <Courses courses={classes} /> : null}
-            {/* <BallTriangle color="#ff0000" height={120} width={120}/> */}
+            {loading ? (
+                <BallTriangle color="#ff0000" height={120} width={120} />
+            ) : tab == "Courses" ? (
+                <Courses courses={classes} />
+            ) : tab == "Grades" ? null : (
+                <Todos items={todos} />
+            )}
+            {/*  */}
         </div>
     );
 };
