@@ -4,27 +4,30 @@ import { queryCanvas } from "./data";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { BallTriangle, Oval } from "react-loader-spinner";
 import { UserBlip } from "./UserBlip";
+import { Courses } from "./Courses";
+import { Tabs } from "./Tabs";
 type ILoadingStates = boolean | { error: string };
-
+type ITabs = "Courses" | "Todos" | "Grades";
 export const App = () => {
     const [classes, setClasses] = useState([]);
     const [apiKey, setApiKey] = useState("");
     const [loading, setLoading] = useState<ILoadingStates>(false);
     const [apiInput, setApiInput] = useState("");
     const [user, setUser] = useState({});
+    const [tab, setTab] = useState<ITabs>("Courses");
 
     useEffect(() => {
-        // chrome.storage.sync.get(["capikey"], (res) => {
-        //     if (res.capikey) {
-        //         setApiKey(res.capikey);
-        //         setLoading(true);
-        //     }
-        // });
-        chrome.storage.sync.clear();
+        chrome.storage.sync.get(["capikey"], (res) => {
+            if (res.capikey) {
+                setApiKey(res.capikey);
+                setLoading(true);
+            }
+        });
     }, []);
     useEffect(() => {
         const getClasses = async () => {
-            setLoading(true)
+            chrome.storage.sync.set({ capikey: apiKey });
+            setLoading(true);
             const empty = new URLSearchParams();
             const params = new URLSearchParams([
                 ["page", "1"],
@@ -33,8 +36,7 @@ export const App = () => {
             let resp: Array<any> = await queryCanvas(
                 params,
                 COURSES_URL,
-                apiKey,
-                true
+                apiKey
             );
             let user = await queryCanvas(empty, ME_URL, apiKey, false);
             setUser(user);
@@ -68,17 +70,9 @@ export const App = () => {
             ) : (
                 <UserBlip user={user} />
             )}
-            {classes.length ? (
-                <ul>
-                    {classes.map((c) => {
-                        return <li key={c.id}>{c.course_code}</li>;
-                    })}
-                </ul>
-            ) : apiKey ? (
-                <div className="pt-16">
-                    <BallTriangle color="#ff0000" height={120} width={120}/>
-                </div>
-            ) : null}
+            <Tabs selected={tab} changeTab={(v: ITabs) => setTab(v)} />
+            {classes.length ? <Courses courses={classes} /> : null}
+            {/* <BallTriangle color="#ff0000" height={120} width={120}/> */}
         </div>
     );
 };
