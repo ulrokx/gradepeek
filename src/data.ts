@@ -21,7 +21,6 @@ export const queryCanvas = async (
         const data = await response.json();
         return data;
     } else {
-        console.log(response);
         const error = await response.json();
         return error;
     }
