@@ -5,6 +5,7 @@ export const Tabs = ({ selected, changeTab }) => {
             {tabs.map((t) => {
                 return (
                     <li
+                    key={t}
                         onClick={() => changeTab(t)}
                         className={`font-medium mx-2 px-4 rounded-t-lg cursor-pointer hover:bg-red-400 py-2 ${
                             t == selected

@@ -1,20 +1,18 @@
-import { SCHOOL_URL } from "../constants";
 import { ChromeTab } from "./ChromeTab";
 
-export const Grades = ({ ctg: courses }) => {
-    SCHOOL_URL.pathname = `/courses/`;
+export const Grades = ({ ctg: courses, url }) => {
+    
     return (
         <ul className="w-5/6">
             {courses
-                ? courses.map((c, i) => {
-                      console.log(c, i);
+                ? courses.map(c => {
                       return (
                           <li>
                               <div className="flex flex-row justify-between">
                                   <ChromeTab
                                       key={c.id}
-                                      className="px-2 py-1 my-1 rounded-lg basis-5/6 bg-blue-200 hover:bg-blue-600 transition-all font-semibold text-center cursor-pointer focus:grow hover:scale-105"
-                                      href={`${SCHOOL_URL.href}${c.id}`}
+                                      className="px-2 py-1 my-1 rounded-lg basis-5/6 bg-blue-200 hover:bg-blue-500 transition-all font-semibold text-center cursor-pointer focus:grow hover:scale-105"
+                                      href={`${url}/courses/${c.id}/grades`}
                                   >
                                       {c.name}
                                   </ChromeTab>

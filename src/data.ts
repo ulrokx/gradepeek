@@ -6,22 +6,19 @@ export const queryCanvas = async (
     token: string,
     debug:boolean = false
 ) => {
-    url.search = searchParam.toString();
+    const localUrl = url
+    localUrl.search = searchParam.toString();
     const response = await fetch(PROXY_URL, {
         method: "GET",
         headers: {
             Authorization: `Bearer ${token}`,
             Accept: "*/*",
-            "Target-URL": url.href,
+            "Target-URL": localUrl.href,
             "Slow-Mode-Debug": debug ? "true" : "false"
         },
         
     });
-    if (response.ok) {
-        const data = await response.json();
-        return data;
-    } else {
-        const error = await response.json();
-        return error;
-    }
+    const data = await response.json()
+    console.log(url.href, data)
+    return data
 };
