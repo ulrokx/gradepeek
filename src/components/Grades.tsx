@@ -1,7 +1,7 @@
 import { ChromeTab } from "./ChromeTab";
 
 export const Grades = ({ ctg: courses, url }) => {
-    
+   console.log(courses) 
     return (
         <ul className="w-5/6">
             {courses

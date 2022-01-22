@@ -89,7 +89,7 @@ export const App = () => {
             if (user && classes.length >= 1) {
                 const userId = user.id;
                 const gradesurl = new URL(urls.grades);
-                gradesurl.pathname = `/${userId}/enrollments`;
+                gradesurl.pathname = `/api/v1/users/${userId}/enrollments`;
                 const resp = await queryCanvas(params, gradesurl, apiKey);
                 if (!resp.errors) {
                     resp.forEach((e) => {

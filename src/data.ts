@@ -6,6 +6,7 @@ export const queryCanvas = async (
     token: string,
     debug:boolean = false
 ) => {
+    console.log(url.href)
     const localUrl = url
     localUrl.search = searchParam.toString();
     const response = await fetch(PROXY_URL, {
@@ -19,6 +20,5 @@ export const queryCanvas = async (
         
     });
     const data = await response.json()
-    console.log(url.href, data)
     return data
 };
