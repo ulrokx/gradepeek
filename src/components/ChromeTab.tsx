@@ -1,4 +1,4 @@
-export const ChromeTab = ({ href, children, className }) => {
+export const ChromeTab = ({ href, children, className = "" }) => {
     const makeNewTab = () => {
         chrome.tabs.create({ url: href });
     };

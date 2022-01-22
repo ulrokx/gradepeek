@@ -50,10 +50,10 @@ export const App = () => {
         });
     }, []);
     useEffect(() => {
-                const result = makeUrls(schoolUrl);
+        const result = makeUrls(schoolUrl);
         const getClasses = async () => {
             if (apiKey && schoolUrl) {
-                console.log("here")
+                console.log("here");
                 setUrls(result);
                 setLoading(true);
                 const coursesurl = new URL(result.courses);
@@ -132,7 +132,7 @@ export const App = () => {
         }
     };
     return (
-        <div className="flex flex-col space-y-4 items-center bg-red-100 h-screen">
+        <div className="flex flex-col space-y-4 items-center bg-red-100 h-screen justify-top">
             <h1 className="mt-2 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800">
                 Gradepeek Canvas
             </h1>
@@ -167,18 +167,20 @@ export const App = () => {
                         </p>
                     ) : null}
                 </>
-            ) : (
+            ) : user.name ?
                 <UserBlip user={user} />
-            )}
-            {classes.length > 0 ? (
+            : null}
+            {apiKey ? (
                 <>
-                    <Tabs selected={tab} changeTab={(v: ITabs) => setTab(v)} />
+                    {classes.length != 0 ?<Tabs selected={tab} changeTab={(v: ITabs) => setTab(v)} /> : null}
                     {classes.length == 0 ? (
-                        <BallTriangle
-                            color="#ff0000"
-                            height={120}
-                            width={120}
-                        />
+                        <div className="py-28">
+                            <BallTriangle
+                                color="#ff0000"
+                                height={120}
+                                width={120}
+                            />
+                        </div>
                     ) : tab == "Courses" ? (
                         <Courses courses={classes} url={urls.base} />
                     ) : tab == "Grades" ? (
