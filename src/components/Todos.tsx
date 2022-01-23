@@ -1,8 +1,8 @@
 import { ChromeTab } from "./ChromeTab";
 import { dateDiffDays } from "./dateDiffDays";
-import dayjs from "dayjs"
-import relativeTime from 'dayjs/plugin/relativeTime';
-dayjs.extend(relativeTime)
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+dayjs.extend(relativeTime);
 
 export const Todos = ({ items, url }) => {
     const now = new Date();
@@ -10,9 +10,13 @@ export const Todos = ({ items, url }) => {
         <ul className="w-5/6 text-center">
             {items
                 ? items.map((i) => {
-                      const due = new Date(i.assignment.due_at);
-                      const daystill = dateDiffDays(now, due);
-                      const till = dayjs().to(dayjs(i.assignment.due_at))
+                      const daystill = dayjs(i.assignment.due_at).diff(
+                          dayjs(),
+                          "d",
+                          true
+                      );
+                      const till = dayjs().to(dayjs(i.assignment.due_at));
+                      console.log(daystill);
                       return (
                           <li className="justify-center gap-1 flex-col">
                               <div className="px-2 py-1 my-1 rounded-lg bg-blue-200 hover:bg-blue-500 transition-all font-semibold w-full text-center cursor-pointer hover:scale-105 mb-0">
@@ -38,7 +42,7 @@ export const Todos = ({ items, url }) => {
                                           : "bg-red-500"
                                   }`}
                               >
-                                  {due.toDateString()}, {till}
+                                  {dayjs(i.assignment.due_at).format("dddd[,] h[:]mm a")}, {till}
                               </p>
                           </li>
                       );

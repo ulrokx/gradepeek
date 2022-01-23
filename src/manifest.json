@@ -7,5 +7,11 @@
         "default_title": "Gradepeek",
         "default_popup": "popup.html"
     },
-    "permissions": ["storage"]
+    "permissions": ["storage"],
+    "icons": {
+        "16": "pic16.png",
+        "32": "pic32.png",
+        "48": "pic48.png",
+        "128": "pic128.png"
+    }
 }
