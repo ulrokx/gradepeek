@@ -9,7 +9,7 @@ export const Todos = ({ items, url }) => {
     return (
         <ul className="w-5/6 text-center">
             {items
-                ? items.map((i) => {
+                ? items.map((i, v) => {
                       const daystill = dayjs(i.assignment.due_at).diff(
                           dayjs(),
                           "d",
@@ -17,11 +17,10 @@ export const Todos = ({ items, url }) => {
                       );
                       const till = dayjs().to(dayjs(i.assignment.due_at));
                       return (
-                          <li className="justify-center gap-1 flex-col">
+                          <li key={v} className="justify-center gap-1 flex-col">
                               <div className="px-2 py-1 my-1 rounded-lg bg-blue-200 hover:bg-blue-500 transition-all font-semibold w-full text-center cursor-pointer hover:scale-105 mb-0">
                                   <ChromeTab
                                       href={`${url}/courses/${i.course_id}/assignments/${i.assignment.id}`}
-                                      key={i.id}
                                   >
                                       {i.assignment.name}
                                   </ChromeTab>

@@ -6,17 +6,16 @@ export const Grades = ({ ctg: courses, url }) => {
             {courses
                 ? courses.map((c) => {
                       return (
-                          <li>
+                          <li key={c.id}>
                               <div className="flex flex-row justify-between">
                                   <ChromeTab
-                                      key={c.id}
                                       className="px-2 py-1 my-1 rounded-lg basis-5/6 bg-blue-200 hover:bg-blue-500 transition-all font-semibold text-center cursor-pointer focus:grow hover:scale-105"
                                       href={`${url}/courses/${c.id}/grades`}
                                   >
                                       {c.name}
                                   </ChromeTab>
                                   <p
-                                      className={`px-2 py-1 my-1 rounded-lg text-center font-semibold" ${
+                                      className={`px-2 py-1 my-1 rounded-lg text-center font-semibold ${
                                           c.grade === null ||
                                           c.grade === undefined
                                               ? "bg-slate-500 hover:bg-slate-600"
