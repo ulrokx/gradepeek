@@ -1,14 +1,15 @@
 import { useEffect, useState } from "react";
 import { BallTriangle } from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import { badgeColor } from "./util/badgeColor";
 import { Courses } from "./components/Courses";
 import { Grades } from "./components/Grades";
 import { Tabs } from "./components/Tabs";
 import { Todos } from "./components/Todos";
 import { UserBlip } from "./components/UserBlip";
-import { queryCanvas } from "./data";
-import { makeUrls } from "./makeUrls";
-type ILoadingStates = boolean | { error: string };
+import { queryCanvas } from "./util/data";
+import { makeUrls } from "./util/makeUrls";
+import { Instructions } from "./components/instructions";
 type ITabs = "Courses" | "Todos" | "Grades";
 const params = new URLSearchParams([
     ["page", "1"],
@@ -24,7 +25,6 @@ const empty = new URLSearchParams();
 export const App = () => {
     const [classes, setClasses] = useState([]);
     const [apiKey, setApiKey] = useState("");
-    const [loading, setLoading] = useState<ILoadingStates>(false);
     const [apiInput, setApiInput] = useState("");
     const [user, setUser] = useState<any>({});
     const [tab, setTab] = useState<ITabs>("Courses");
@@ -39,7 +39,6 @@ export const App = () => {
         chrome.storage.sync.get(["capikey"], (res) => {
             if (res.capikey) {
                 setApiKey(res.capikey);
-                setLoading(true);
             }
         });
         // chrome.storage.sync.clear()
@@ -48,21 +47,23 @@ export const App = () => {
                 setSchoolURL(res.schoolurl);
             }
         });
+        chrome.storage.sync.get(["keyinput", "schoolinput"], (res) => {
+            setApiInput(res.keyinput ? res.keyinput : "");
+            setSchoolInput(res.schoolinput ? res.schoolinput : "");
+        });
     }, []);
     useEffect(() => {
-        const result = makeUrls(schoolUrl);
+        const madeurls = makeUrls(schoolUrl);
         const getClasses = async () => {
             if (apiKey && schoolUrl) {
-                console.log("here");
-                setUrls(result);
-                setLoading(true);
-                const coursesurl = new URL(result.courses);
+                setUrls(madeurls);
+                const coursesurl = new URL(madeurls.courses);
                 let resp: Array<any> = await queryCanvas(
                     params,
                     coursesurl,
                     apiKey
                 );
-                const meurl = new URL(result.me);
+                const meurl = new URL(madeurls.me);
                 let user: any = await queryCanvas(empty, meurl, apiKey);
                 setUser(user);
                 resp = resp.filter((v) => {
@@ -73,16 +74,18 @@ export const App = () => {
         };
         const getTodos = async () => {
             if (apiKey) {
-                setLoading(true);
-                const todosurl = new URL(result.todos);
+                const todosurl = new URL(madeurls.todos);
                 let resp: any = await queryCanvas(empty, todosurl, apiKey);
-                resp = resp.filter((r) => r.type == "submitting");
+                resp = await resp.filter((r) => r.type == "submitting");
                 setTodos(resp);
+                chrome.browserAction.setBadgeText({text: resp.length >= 1 ? resp.length.toString() : "👍"})
+                chrome.browserAction.setBadgeBackgroundColor({color: badgeColor(resp.length)})
             }
         };
+        if(schoolUrl) {
         getClasses();
         getTodos();
-        setLoading(false);
+        }
     }, [apiKey, schoolUrl]);
     useEffect(() => {
         const getGrades = async () => {
@@ -115,14 +118,19 @@ export const App = () => {
     }, [classes, user]);
     const handleSubmit = async () => {
         if (apiInput.length == 69 && schoolInput) {
-            const temp = new URL(schoolInput);
+            let totest = schoolInput;
+            if (!schoolInput.match(/^https?:\/\//i)) {
+                totest = "https://" + totest;
+            }
+            const temp = new URL(totest);
+
             temp.pathname = "/api/v1/users/self/profile";
             const resp = await queryCanvas(empty, temp, apiInput);
             if (resp.id) {
                 setApiKey(apiInput);
-                setSchoolURL(schoolInput);
+                setSchoolURL(totest);
                 chrome.storage.sync.set({ capikey: apiInput });
-                chrome.storage.sync.set({ schoolurl: schoolInput });
+                chrome.storage.sync.set({ schoolurl: totest });
                 setErrors(false);
             } else {
                 setErrors(true);
@@ -141,17 +149,27 @@ export const App = () => {
                     <input
                         disabled={apiKey && schoolUrl ? true : false}
                         type="text"
-                        placeholder="Enter your access token here"
+                        placeholder="Access token"
                         className="w-2/3 outline outline-red-300 rounded-md p-3 shadow-md"
-                        onChange={(e) => setApiInput(e.target.value)}
+                        onChange={(e) => {
+                            setApiInput(e.target.value);
+                            chrome.storage.sync.set({
+                                keyinput: e.target.value,
+                            });
+                        }}
                         value={apiInput}
                     />
                     <input
                         disabled={schoolUrl && apiKey ? true : false}
                         type="text"
-                        placeholder="Enter your school's Canvas page here"
+                        placeholder="Canvas URL"
                         className="w-2/3 outline outline-red-300 rounded-md p-3 shadow-md"
-                        onChange={(e) => setSchoolInput(e.target.value)}
+                        onChange={(e) => {
+                            setSchoolInput(e.target.value);
+                            chrome.storage.sync.set({
+                                schoolinput: e.target.value,
+                            });
+                        }}
                         value={schoolInput}
                     />
                     <button
@@ -161,18 +179,23 @@ export const App = () => {
                         Log me in
                     </button>
                     {errors ? (
-                        <p>
-                            something went wrong, please verify information is
-                            correct
+                        <p className="w-5/6 font-medium">
+                            Something went wrong, please verify that your information is correct.
                         </p>
                     ) : null}
+                <Instructions />
                 </>
-            ) : user.name ?
+            ) : user.name ? (
                 <UserBlip user={user} />
-            : null}
+            ) : null}
             {apiKey ? (
                 <>
-                    {classes.length != 0 ?<Tabs selected={tab} changeTab={(v: ITabs) => setTab(v)} /> : null}
+                    {classes.length != 0 ? (
+                        <Tabs
+                            selected={tab}
+                            changeTab={(v: ITabs) => setTab(v)}
+                        />
+                    ) : null}
                     {classes.length == 0 ? (
                         <div className="py-28">
                             <BallTriangle

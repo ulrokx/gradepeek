@@ -9,9 +9,9 @@
     },
     "permissions": ["storage"],
     "icons": {
-        "16": "pic16.png",
-        "32": "pic32.png",
-        "48": "pic48.png",
-        "128": "pic128.png"
+        "16": "assets/gp16.png",
+        "32": "assets/gp32.png",
+        "48": "assets/gp48.png",
+        "128": "assets/gp128.png"
     }
 }
