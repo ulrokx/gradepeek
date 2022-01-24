@@ -78,8 +78,8 @@ export const App = () => {
                 let resp: any = await queryCanvas(empty, todosurl, apiKey);
                 resp = await resp.filter((r) => r.type == "submitting");
                 setTodos(resp);
-                chrome.browserAction.setBadgeText({text: resp.length >= 1 ? resp.length.toString() : "👍"})
-                chrome.browserAction.setBadgeBackgroundColor({color: badgeColor(resp.length)})
+                chrome.action.setBadgeText({text: resp.length >= 1 ? resp.length.toString() : "👍"})
+                chrome.action.setBadgeBackgroundColor({color: badgeColor(resp.length)})
             }
         };
         if(schoolUrl) {
@@ -150,7 +150,7 @@ export const App = () => {
                         disabled={apiKey && schoolUrl ? true : false}
                         type="text"
                         placeholder="Access token"
-                        className="w-2/3 outline outline-red-300 rounded-md p-3 shadow-md"
+                        className="transition-all w-2/3 outline outline-red-300 rounded-md p-3 shadow-md focus:scale-105 focus:outline-4 focus:outline-red-500"
                         onChange={(e) => {
                             setApiInput(e.target.value);
                             chrome.storage.sync.set({
@@ -163,7 +163,7 @@ export const App = () => {
                         disabled={schoolUrl && apiKey ? true : false}
                         type="text"
                         placeholder="Canvas URL"
-                        className="w-2/3 outline outline-red-300 rounded-md p-3 shadow-md"
+                        className="transition-all w-2/3 outline outline-red-300 rounded-md p-3 shadow-md focus:scale-105 focus:outline-4 focus:outline-red-500"
                         onChange={(e) => {
                             setSchoolInput(e.target.value);
                             chrome.storage.sync.set({
@@ -174,7 +174,7 @@ export const App = () => {
                     />
                     <button
                         onClick={handleSubmit}
-                        className="outline outline-green-500 outline-2 px-3 py-2 rounded-lg bg-green-200 font-semibold"
+                        className="transition-all shadow-md outline outline-green-500 outline-2 px-3 py-2 rounded-lg bg-green-200 font-semibold hover:outline-green-600 hover:bg-green-400 hover:scale-105"
                     >
                         Log me in
                     </button>
