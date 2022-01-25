@@ -34,7 +34,6 @@ export const App = () => {
     const [schoolInput, setSchoolInput] = useState("");
     const [urls, setUrls] = useState<IUrls>();
     const [errors, setErrors] = useState(false);
-
     useEffect(() => {
         chrome.storage.sync.get(["capikey"], (res) => {
             if (res.capikey) {
