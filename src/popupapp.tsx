@@ -22,7 +22,6 @@ export const App = () => {
     const [tab, setTab] = useState<ITabs>("Courses");
     const [schoolInput, setSchoolInput] = useState("");
     const [page, setPage] = useState<IPages>("Loading");
-    let Placeholder;
     useEffect(() => {
         chrome.storage.sync.get(["capikey", "schoolurl", "termID"], (res) => {
             if (res.capikey && res.schoolurl && res.termID) {
@@ -32,7 +31,7 @@ export const App = () => {
                         apiKey: res.capikey,
                         schoolUrl: res.schoolurl,
                         termID: res.termID,
-                        errors: false
+                        errors: false,
                     },
                 });
                 getData(res.termID, res.schoolurl, res.capikey);
@@ -44,7 +43,7 @@ export const App = () => {
                     setApiInput(res.apiInput ? res.apiInput : "");
                     setSchoolInput(res.schoolInput ? res.schoolInput : "");
                 });
-                // chrome.action.setBadgeText({text: ""})
+                chrome.action.setBadgeText({ text: "" });
             }
         });
     }, []);
@@ -75,7 +74,7 @@ export const App = () => {
                         apiKey: apiInput,
                         allCourses: data,
                         schoolUrl: madeURLs.base,
-                        errors: false
+                        errors: false,
                     },
                 });
                 setPage("TermSelect");
@@ -84,8 +83,8 @@ export const App = () => {
             }
         } else {
             dispatch({
-                type: "setError"
-            })
+                type: "setError",
+            });
             return;
         }
     };
@@ -125,12 +124,12 @@ export const App = () => {
         const user = await getUser(madeURLs.me, key);
         const courses = await getCourses(madeURLs.courses, key, termID);
         const todos = await getTodos(madeURLs.todos, key);
-        // chrome.action.setBadgeText({
-        //     text: todos.length >= 1 ? todos.length.toString() : "👍",
-        // });
-        // chrome.action.setBadgeBackgroundColor({
-        //     color: badgeColor(todos.length),
-        // });
+        chrome.action.setBadgeText({
+            text: todos.length >= 1 ? todos.length.toString() : "👍",
+        });
+        chrome.action.setBadgeBackgroundColor({
+            color: badgeColor(todos.length),
+        });
         let userID = null;
         let idx = 0;
         while (!userID) {

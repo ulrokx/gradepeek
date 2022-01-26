@@ -28,13 +28,13 @@ export const UserBlip: React.FC<IUserBlip> = ({ user, onLogOut }) => {
                     onClick={() => setReady(true)}
                     onLoad={onLoad}
                     alt="profile picture"
-                    className={`h-12 w-12 rounded-full outline-2 outline-blue-300 outline-offset-4 outline hover:outline-blue-500 cursor-pointer hover:animate-spin ${
+                    className={`select-none h-12 w-12 rounded-full outline-2 outline-blue-300 outline-offset-4 outline hover:outline-blue-500 cursor-pointer hover:animate-spin ${
                         display ? "block" : "hidden"
                     }`}
                 />
             ) : (
                 <div
-                    className="h-12 w-12 px-2 rounded-full outline-2 outline-red-300 outline-offset-4 outline hover: outline-500 flex justify-center items-center font-medium text-red-600 bg-red-200 cursor-pointer"
+                    className="select-none h-12 w-12 px-2 rounded-full outline-2 outline-red-300 outline-offset-4 outline hover: outline-500 flex justify-center items-center font-medium text-red-600 bg-red-200 cursor-pointer"
                     onClick={onLogOut}
                 >
                     Logout?

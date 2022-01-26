@@ -26,6 +26,7 @@ export const TermSelect: React.FC<TermSelectProps> = ({
                         {courses.length >= 1
                             ? courses.map((c) => (
                                   <CourseItem
+                                  key={c.id}
                                       className="w-5/6"
                                       course={c}
                                       onClick={onSelect}
