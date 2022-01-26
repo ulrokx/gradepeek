@@ -1,4 +1,7 @@
 export const makeUrls = (url: string) => {
+    if(!url.match(/^https?:\/\//i)) {
+        url = `https://${url}`
+    }
     if (url.endsWith("/")) {
         url = url.slice(0, url.length - 1);
     }
