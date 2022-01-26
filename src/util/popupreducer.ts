@@ -29,26 +29,23 @@ type IState = {
 
 interface ReducerAction {
     type:
-        | "valid"
         | "setFromStorage"
-        | "setUser"
-        | "setCourses"
-        | "setTodos"
-        | "setGrades"
         | "setURLs"
         | "setError"
-        | "setAllCourses"
         | "setTermID"
+        | "setData"
+        | "logOut"
     payload?: {
-        key?: string;
-        school?: string;
+        apiKey?: string;
+        schoolUrl?: string;
         user?: {};
         courses?: Array<ICourse>;
         todos?: Array<IEvent>;
         grades?: Array<ICGrades>;
         urls?: ReturnType<typeof makeUrls>;
         allCourses?: Array<ICourse>
-        termID?: number
+        termID?: number,
+        errors?: boolean
     };
 }
 
@@ -57,40 +54,12 @@ export const PopupReducer = (
     action: ReducerAction
 ): typeof initialState => {
     switch (action.type) {
-        case "valid":
-            return {
-                ...state,
-                apiKey: action.payload.key,
-                schoolUrl: action.payload.school,
-                errors: null,
-                urls: makeUrls(action.payload.school),
-            };
         case "setFromStorage":
             return {
                 ...state,
-                apiKey: action.payload.key,
-                schoolUrl: action.payload.school,
+                apiKey: action.payload.apiKey,
+                schoolUrl: action.payload.schoolUrl,
                 termID: action.payload.termID
-            };
-        case "setUser":
-            return {
-                ...state,
-                user: action.payload.user,
-            };
-        case "setCourses":
-            return {
-                ...state,
-                courses: action.payload.courses,
-            };
-        case "setTodos":
-            return {
-                ...state,
-                todos: action.payload.todos,
-            };
-        case "setGrades":
-            return {
-                ...state,
-                grades: action.payload.grades,
             };
         case "setURLs":
             return {
@@ -102,15 +71,29 @@ export const PopupReducer = (
                 ...state,
                 errors: true,
             };
-        case "setAllCourses":
-            return {
-                ...state,
-                allCourses: action.payload.allCourses
-            }
         case "setTermID":
             return {
                 ...state,
                 termID: action.payload.termID
+            }
+        case "setData":
+            const {courses, allCourses, grades, todos, user, apiKey, schoolUrl, termID, urls, errors} = action.payload
+            return {
+                ...state,
+                courses: courses ? courses : state.courses,
+                allCourses: allCourses ? allCourses : state.allCourses,
+                grades: grades ? grades : state.grades,
+                todos: todos ? todos : state.todos,
+                user: user ? user : state.user,
+                apiKey: apiKey ? apiKey : state.apiKey,
+                schoolUrl: schoolUrl ? schoolUrl : state.schoolUrl,
+                termID: termID ? termID : state.termID,
+                urls: urls ? urls : state.urls,
+                errors: errors ? errors : state.errors
+            }
+        case "logOut":
+            return {
+                ...initialState
             }
     }
 };

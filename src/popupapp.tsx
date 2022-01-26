@@ -1,3 +1,4 @@
+import * as React from "react";
 import { ChangeEvent, useEffect, useReducer, useState } from "react";
 import { BallTriangle } from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
@@ -8,6 +9,7 @@ import { Tabs } from "./components/Tabs";
 import { TermSelect } from "./components/TermSelect";
 import { Todos } from "./components/Todos";
 import { UserBlip } from "./components/UserBlip";
+import { badgeColor } from "./util/badgeColor";
 import { getCourses, getGrades, getTodos, getUser } from "./util/data";
 import { makeUrls } from "./util/makeUrls";
 import { initialState, PopupReducer } from "./util/popupreducer";
@@ -20,18 +22,17 @@ export const App = () => {
     const [tab, setTab] = useState<ITabs>("Courses");
     const [schoolInput, setSchoolInput] = useState("");
     const [page, setPage] = useState<IPages>("Loading");
+    let Placeholder;
     useEffect(() => {
         chrome.storage.sync.get(["capikey", "schoolurl", "termID"], (res) => {
-            if (!res.termID && res.capikey && res.schoolurl) {
-                setPage("TermSelect");
-            } //if the onboarding was interupted
-            else if (res.capikey && res.schoolurl && res.termID) {
+            if (res.capikey && res.schoolurl && res.termID) {
                 dispatch({
                     type: "setFromStorage",
                     payload: {
-                        key: res.capikey,
-                        school: res.schoolurl,
+                        apiKey: res.capikey,
+                        schoolUrl: res.schoolurl,
                         termID: res.termID,
+                        errors: false
                     },
                 });
                 getData(res.termID, res.schoolurl, res.capikey);
@@ -43,11 +44,10 @@ export const App = () => {
                     setApiInput(res.apiInput ? res.apiInput : "");
                     setSchoolInput(res.schoolInput ? res.schoolInput : "");
                 });
+                // chrome.action.setBadgeText({text: ""})
             }
         });
     }, []);
-    // chrome.action.setBadgeText({text: resp.length >= 1 ? resp.length.toString() : "👍"})
-    // chrome.action.setBadgeBackgroundColor({color: badgeColor(resp.length)})
     const handleSubmit = async () => {
         //mightbe race condiition if user changes input
         if (apiInput.length == 69 && schoolInput) {
@@ -67,29 +67,26 @@ export const App = () => {
                 return;
             }
             if (data) {
+                console.log(data);
                 dispatch({
-                    type: "setUser",
+                    type: "setData",
                     payload: {
                         user,
-                    },
-                });
-                dispatch({
-                    type: "setAllCourses",
-                    payload: {
+                        apiKey: apiInput,
                         allCourses: data,
-                    },
-                });
-                dispatch({
-                    type: "setFromStorage",
-                    payload: {
-                        key: apiInput,
-                        school: madeURLs.base,
+                        schoolUrl: madeURLs.base,
+                        errors: false
                     },
                 });
                 setPage("TermSelect");
                 chrome.storage.sync.set({ capikey: apiInput });
                 chrome.storage.sync.set({ schoolurl: madeURLs.base });
             }
+        } else {
+            dispatch({
+                type: "setError"
+            })
+            return;
         }
     };
     const handleApiInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -128,6 +125,12 @@ export const App = () => {
         const user = await getUser(madeURLs.me, key);
         const courses = await getCourses(madeURLs.courses, key, termID);
         const todos = await getTodos(madeURLs.todos, key);
+        // chrome.action.setBadgeText({
+        //     text: todos.length >= 1 ? todos.length.toString() : "👍",
+        // });
+        // chrome.action.setBadgeBackgroundColor({
+        //     color: badgeColor(todos.length),
+        // });
         let userID = null;
         let idx = 0;
         while (!userID) {
@@ -139,23 +142,26 @@ export const App = () => {
         }
         const grades = await getGrades(madeURLs.grades, key, courses, userID);
         dispatch({
-            type: "setCourses",
+            type: "setData",
             payload: {
-                courses: courses,
+                courses,
+                todos,
+                grades,
+                user,
             },
         });
+    };
+    const handleLogOut = () => {
+        console.log("here");
         dispatch({
-            type: "setTodos",
-            payload: { todos: todos },
+            type: "logOut",
         });
-        dispatch({
-            type: "setGrades",
-            payload: { grades: grades },
+        setPage("Inputs");
+        chrome.storage.sync.get(["apiInput, schoolInput"], (res) => {
+            if (res.apiInput && res.schoolInput) setApiInput(res.apiIput);
+            setSchoolInput(res.schoolInput);
         });
-        dispatch({
-            type: "setUser",
-            payload: { user },
-        });
+        chrome.storage.sync.clear();
     };
     return (
         <div className="flex flex-col space-y-4 items-center bg-red-100 h-screen justify-top">
@@ -177,6 +183,7 @@ export const App = () => {
                 />
             ) : page == "TermSelect" ? (
                 <TermSelect
+                    error={state.errors}
                     courses={state.allCourses}
                     onSelect={handleCourseSelect}
                 />
@@ -192,7 +199,10 @@ export const App = () => {
                         </div>
                     ) : (
                         <>
-                            <UserBlip user={state.user} />
+                            <UserBlip
+                                user={state.user}
+                                onLogOut={handleLogOut}
+                            />
                             <Tabs
                                 selected={tab}
                                 changeTab={(v: ITabs) => setTab(v)}

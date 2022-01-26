@@ -1,10 +1,15 @@
+import * as React from "react";
+import { ICourse } from "../util/types/generated";
 import { ChromeTab } from "./ChromeTab";
-
+interface ICourses {
+    courses: Array<ICourse>
+    url: string
+}
 export const Courses = ({ courses, url }) => {
     return (
         <ul className="w-5/6">
             {courses
-                ? courses.map((c, i) => {
+                ? courses.map((c: ICourse) => {
                       return (
                           <li className="flex flex-column justify-center gap-1" key={c.id}>
                               <ChromeTab

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { ChromeTab } from "./ChromeTab";
+import * as React from "react";
 import { Instructions } from "./instructions";
 import { TextField } from "./TextField";
 
