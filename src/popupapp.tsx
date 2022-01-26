@@ -13,19 +13,19 @@ import { makeUrls } from "./util/makeUrls";
 import { initialState, PopupReducer } from "./util/popupreducer";
 import { ICourse } from "./util/types/generated";
 type ITabs = "Courses" | "Todos" | "Grades";
-type IPages = "Inputs" | "TermSelect" | "Main";
+type IPages = "Inputs" | "TermSelect" | "Main" | "Loading";
 export const App = () => {
     const [state, dispatch] = useReducer(PopupReducer, initialState);
     const [apiInput, setApiInput] = useState("");
     const [tab, setTab] = useState<ITabs>("Courses");
     const [schoolInput, setSchoolInput] = useState("");
-    const [page, setPage] = useState<IPages>("Inputs");
+    const [page, setPage] = useState<IPages>("Loading");
     useEffect(() => {
         chrome.storage.sync.get(["capikey", "schoolurl", "termID"], (res) => {
             if (!res.termID && res.capikey && res.schoolurl) {
                 setPage("TermSelect");
-            }
-            if (res.capikey && res.schoolurl && res.termID) {
+            } //if the onboarding was interupted
+            else if (res.capikey && res.schoolurl && res.termID) {
                 dispatch({
                     type: "setFromStorage",
                     payload: {
@@ -36,13 +36,14 @@ export const App = () => {
                 });
                 getData(res.termID, res.schoolurl, res.capikey);
                 setPage("Main");
-                return;
+            } else {
+                //needs to onboard
+                setPage("Inputs");
+                chrome.storage.sync.get(["apiInput", "schoolInput"], (res) => {
+                    setApiInput(res.apiInput ? res.apiInput : "");
+                    setSchoolInput(res.schoolInput ? res.schoolInput : "");
+                });
             }
-        });
-        chrome.storage.sync.get(["apiInput", "schoolInput"], (res) => {
-            console.log(res);
-            setApiInput(res.apiInput ? res.apiInput : "");
-            setSchoolInput(res.schoolInput ? res.schoolInput : "");
         });
     }, []);
     // chrome.action.setBadgeText({text: resp.length >= 1 ? resp.length.toString() : "👍"})
@@ -65,17 +66,24 @@ export const App = () => {
                 });
                 return;
             }
-            dispatch({
-                type: "setUser",
-                payload: {
-                    user,
-                },
-            });
             if (data) {
+                dispatch({
+                    type: "setUser",
+                    payload: {
+                        user,
+                    },
+                });
                 dispatch({
                     type: "setAllCourses",
                     payload: {
                         allCourses: data,
+                    },
+                });
+                dispatch({
+                    type: "setFromStorage",
+                    payload: {
+                        key: apiInput,
+                        school: madeURLs.base,
                     },
                 });
                 setPage("TermSelect");
@@ -101,6 +109,7 @@ export const App = () => {
                 termID,
             },
         });
+        console.log(termID, state.schoolUrl, state.apiKey);
         getData(termID, state.schoolUrl, state.apiKey);
         setPage("Main");
     };
@@ -153,7 +162,11 @@ export const App = () => {
             <h1 className="mt-2 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800">
                 Gradepeek Canvas
             </h1>
-            {page == "Inputs" ? (
+            {page == "Loading" ? (
+                <div className="py-28">
+                    <BallTriangle color="#ff0000" height={120} width={120} />
+                </div>
+            ) : page == "Inputs" ? (
                 <InputPage
                     apiInput={apiInput}
                     onApiChange={handleApiInputChange}

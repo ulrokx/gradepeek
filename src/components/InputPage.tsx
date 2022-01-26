@@ -27,7 +27,6 @@ export const InputPage = ({apiInput, onApiChange, schoolInput, onSchoolChange, o
                             Something went wrong, please verify that your information is correct.
                         </p>
                     ) : null}
-                    <ChromeTab href={chrome.runtime.getURL("onboard.html")}>open</ChromeTab>
                 <Instructions />
         </>
     )

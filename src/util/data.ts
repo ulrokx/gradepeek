@@ -17,7 +17,6 @@ export const queryCanvas = async <ResponseType>(
     token: string,
     debug: boolean = false
 ): Promise<ResponseType | null> => {
-    console.log("href", url.href, "key", token)
     const localUrl = url;
     localUrl.search = searchParam.toString();
     const response = await fetch(PROXY_URL, {
