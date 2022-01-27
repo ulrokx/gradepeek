@@ -1,20 +1,19 @@
-import * as React from "react";
 import { ChangeEvent, useEffect, useReducer, useState } from "react";
+import { IoSettings } from "react-icons/io5";
 import { BallTriangle } from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Courses } from "./components/Courses";
 import { Grades } from "./components/Grades";
-import { InputPage } from "./pages/InputPage";
 import { Tabs } from "./components/Tabs";
-import { TermSelect } from "./pages/TermSelect";
 import { Todos } from "./components/Todos";
 import { UserBlip } from "./components/UserBlip";
-import { badgeColor } from "./util/badgeColor";
-import { getCourses, getData, getGrades, getTodos, getUser } from "./util/data";
+import { InputPage } from "./pages/InputPage";
+import { SettingsPage } from "./pages/SettingsPage";
+import { TermSelect } from "./pages/TermSelect";
+import { getCourses, getData, getUser } from "./util/data";
 import { makeUrls } from "./util/makeUrls";
 import { initialState, PopupReducer } from "./util/popupreducer";
 import { ICourse } from "./util/types/generated";
-import { IoSettings } from "react-icons/io5";
 type ITabs = "Courses" | "Todos" | "Grades";
 type IPages = "Inputs" | "TermSelect" | "Main" | "Loading" | "Settings";
 export const App = () => {
@@ -49,7 +48,7 @@ export const App = () => {
                             urls: data.madeURLs,
                         },
                     });
-                    setPage("Main");
+                    setPage("Settings");
                 } else {
                     //needs to onboard
                     setPage("Inputs");
@@ -168,6 +167,8 @@ export const App = () => {
                     errors={state.errors}
                     onSubmit={handleSubmit}
                 />
+            ) : page == "Settings" ? (
+                <SettingsPage />
             ) : page == "TermSelect" ? (
                 <TermSelect
                     error={state.errors}
