@@ -1,4 +1,6 @@
+import { badgeColor } from "./badgeColor";
 import { PROXY_URL } from "./constants";
+import { makeUrls } from "./makeUrls";
 import {
     ICGrades,
     ICourse,
@@ -32,7 +34,7 @@ export const queryCanvas = async <ResponseType>(
         const data: ResponseType = await response.json();
         return data;
     } else {
-        return null
+        return null;
     }
 };
 
@@ -49,14 +51,14 @@ export const getCourses = async (
 ) => {
     const url = new URL(madeUrl);
     const data = await queryCanvas<Array<ICourse>>(pagesParams, url, apiKey);
-    if(!data) {
-        return []
+    if (!data) {
+        return [];
     }
     if (termId && data) {
         const filtered = data.filter((c) => c.enrollment_term_id == termId);
         return filtered;
     } else {
-        const filtered = data.filter(c => c.course_code)
+        const filtered = data.filter((c) => c.course_code);
         return filtered;
     }
 };
@@ -98,4 +100,36 @@ export const getGrades = async (
         });
         return ctg;
     }
+};
+
+export const getData = async (termID: number, schoolurl?: string, key?: string) => {
+    const madeURLs = makeUrls(schoolurl);
+    const user = await getUser(madeURLs.me, key);
+    const courses = await getCourses(madeURLs.courses, key, termID);
+    const todos = await getTodos(madeURLs.todos, key);
+    if (chrome.action) {
+        chrome.action.setBadgeText({
+            text: todos.length >= 1 ? todos.length.toString() : "👍",
+        });
+        chrome.action.setBadgeBackgroundColor({
+            color: badgeColor(todos.length),
+        });
+    }
+    let userID = null;
+    let idx = 0;
+    while (!userID) {
+        if (idx >= courses.length) return;
+        if (courses[idx].enrollments[0].user_id) {
+            userID = courses[idx].enrollments[0].user_id;
+        }
+        idx++;
+    }
+    const grades = await getGrades(madeURLs.grades, key, courses, userID);
+    return {
+        madeURLs,
+        grades,
+        todos,
+        user,
+        courses,
+    };
 };

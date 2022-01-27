@@ -1,7 +1,8 @@
+import React from "react";
 import { ChromeTab } from "./ChromeTab";
 
 export const Instructions = () => {
-    return (
+    return ( //not everyone sees the big canvas logo TODO
         <div className="block">
             <h1 className="text-lg font-semibold text-center">How to get started:</h1>
             <h2 className="text-base font-semibold">Access token:</h2>

@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Instructions } from "./instructions";
-import { TextField } from "./TextField";
+import { Instructions } from "../components/instructions";
+import { TextField } from "../components/TextField";
 
 export const InputPage = ({apiInput, onApiChange, schoolInput, onSchoolChange, onSubmit, errors}) => {
     return(

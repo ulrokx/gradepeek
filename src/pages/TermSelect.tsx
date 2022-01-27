@@ -1,6 +1,6 @@
 import React from "react";
 import { ICourse } from "../util/types/generated";
-import { CourseItem } from "./CourseItem";
+import { CourseItem } from "../components/CourseItem";
 
 interface TermSelectProps {
     courses: Array<ICourse>;

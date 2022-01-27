@@ -473,6 +473,38 @@ Ensure the default browser behavior of the `hidden` attribute.
   --tw-backdrop-sepia:  ;
 }
 
+.absolute {
+  position: absolute;
+}
+
+.top-2 {
+  top: 0.5rem;
+}
+
+.left-2 {
+  left: 0.5rem;
+}
+
+.right-2 {
+  right: 0.5rem;
+}
+
+.top-1 {
+  top: 0.25rem;
+}
+
+.top-1\/2 {
+  top: 50%;
+}
+
+.top-\[2px\] {
+  top: 2px;
+}
+
+.top-0 {
+  top: 0px;
+}
+
 .my-1 {
   margin-top: 0.25rem;
   margin-bottom: 0.25rem;
@@ -502,6 +534,14 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .ml-\[16px\] {
   margin-left: 16px;
+}
+
+.ml-0 {
+  margin-left: 0px;
+}
+
+.mr-1 {
+  margin-right: 0.25rem;
 }
 
 .block {
@@ -739,6 +779,10 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .pl-2 {
   padding-left: 0.5rem;
+}
+
+.pr-2 {
+  padding-right: 0.5rem;
 }
 
 .text-center {

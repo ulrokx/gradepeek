@@ -4,18 +4,19 @@ import { BallTriangle } from "react-loader-spinner";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Courses } from "./components/Courses";
 import { Grades } from "./components/Grades";
-import { InputPage } from "./components/InputPage";
+import { InputPage } from "./pages/InputPage";
 import { Tabs } from "./components/Tabs";
-import { TermSelect } from "./components/TermSelect";
+import { TermSelect } from "./pages/TermSelect";
 import { Todos } from "./components/Todos";
 import { UserBlip } from "./components/UserBlip";
 import { badgeColor } from "./util/badgeColor";
-import { getCourses, getGrades, getTodos, getUser } from "./util/data";
+import { getCourses, getData, getGrades, getTodos, getUser } from "./util/data";
 import { makeUrls } from "./util/makeUrls";
 import { initialState, PopupReducer } from "./util/popupreducer";
 import { ICourse } from "./util/types/generated";
+import { IoSettings } from "react-icons/io5";
 type ITabs = "Courses" | "Todos" | "Grades";
-type IPages = "Inputs" | "TermSelect" | "Main" | "Loading";
+type IPages = "Inputs" | "TermSelect" | "Main" | "Loading" | "Settings";
 export const App = () => {
     const [state, dispatch] = useReducer(PopupReducer, initialState);
     const [apiInput, setApiInput] = useState("");
@@ -23,33 +24,55 @@ export const App = () => {
     const [schoolInput, setSchoolInput] = useState("");
     const [page, setPage] = useState<IPages>("Loading");
     useEffect(() => {
-        chrome.storage.sync.get(["capikey", "schoolurl", "termID"], (res) => {
-            if (res.capikey && res.schoolurl && res.termID) {
-                dispatch({
-                    type: "setFromStorage",
-                    payload: {
-                        apiKey: res.capikey,
-                        schoolUrl: res.schoolurl,
-                        termID: res.termID,
-                        errors: false,
-                    },
-                });
-                getData(res.termID, res.schoolurl, res.capikey);
-                setPage("Main");
-            } else {
-                //needs to onboard
-                setPage("Inputs");
-                chrome.storage.sync.get(["apiInput", "schoolInput"], (res) => {
-                    setApiInput(res.apiInput ? res.apiInput : "");
-                    setSchoolInput(res.schoolInput ? res.schoolInput : "");
-                });
-                chrome.action.setBadgeText({ text: "" });
+        chrome.storage.sync.get(
+            ["capikey", "schoolurl", "termID"],
+            async (res) => {
+                if (res.capikey && res.schoolurl && res.termID) {
+                    dispatch({
+                        type: "setFromStorage",
+                        payload: {
+                            apiKey: res.capikey,
+                            schoolUrl: res.schoolurl,
+                            termID: res.termID,
+                            errors: false,
+                        },
+                    });
+                    const data = await getData(
+                        res.termID,
+                        res.schoolurl,
+                        res.capikey
+                    );
+                    dispatch({
+                        type: "setData",
+                        payload: {
+                            ...data,
+                            urls: data.madeURLs,
+                        },
+                    });
+                    setPage("Main");
+                } else {
+                    //needs to onboard
+                    setPage("Inputs");
+                    chrome.storage.sync.get(
+                        ["apiInput", "schoolInput"],
+                        (res) => {
+                            setApiInput(res.apiInput ? res.apiInput : "");
+                            setSchoolInput(
+                                res.schoolInput ? res.schoolInput : ""
+                            );
+                        }
+                    );
+                    if (chrome.action) {
+                        chrome.action.setBadgeText({ text: "" });
+                    }
+                }
             }
-        });
+        );
     }, []);
     const handleSubmit = async () => {
         //mightbe race condiition if user changes input
         if (apiInput.length == 69 && schoolInput) {
+            setPage("Loading");
             const madeURLs = makeUrls(schoolInput);
             dispatch({
                 type: "setURLs",
@@ -105,50 +128,14 @@ export const App = () => {
                 termID,
             },
         });
-        console.log(termID, state.schoolUrl, state.apiKey);
-        getData(termID, state.schoolUrl, state.apiKey);
-        setPage("Main");
-    };
-    const getData = async (
-        termID: number,
-        schoolurl?: string,
-        key?: string
-    ) => {
-        const madeURLs = makeUrls(schoolurl);
-        dispatch({
-            type: "setURLs",
-            payload: {
-                urls: madeURLs,
-            },
-        });
-        const user = await getUser(madeURLs.me, key);
-        const courses = await getCourses(madeURLs.courses, key, termID);
-        const todos = await getTodos(madeURLs.todos, key);
-        chrome.action.setBadgeText({
-            text: todos.length >= 1 ? todos.length.toString() : "👍",
-        });
-        chrome.action.setBadgeBackgroundColor({
-            color: badgeColor(todos.length),
-        });
-        let userID = null;
-        let idx = 0;
-        while (!userID) {
-            if (idx >= courses.length) return;
-            if (courses[idx].enrollments[0].user_id) {
-                userID = courses[idx].enrollments[0].user_id;
-            }
-            idx++;
-        }
-        const grades = await getGrades(madeURLs.grades, key, courses, userID);
+        const data = await getData(termID, state.schoolUrl, state.apiKey);
         dispatch({
             type: "setData",
             payload: {
-                courses,
-                todos,
-                grades,
-                user,
+                ...data,
             },
         });
+        setPage("Main");
     };
     const handleLogOut = () => {
         console.log("here");
@@ -164,9 +151,10 @@ export const App = () => {
     };
     return (
         <div className="flex flex-col space-y-4 items-center bg-red-100 h-screen justify-top">
-            <h1 className="mt-2 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800">
+            <h1 className="pr-2 mt-2 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800">
                 Gradepeek Canvas
             </h1>
+            <IoSettings className="absolute top-0 right-2" size={25} />
             {page == "Loading" ? (
                 <div className="py-28">
                     <BallTriangle color="#ff0000" height={120} width={120} />
