@@ -29,7 +29,7 @@ export const TermSelect: React.FC<TermSelectProps> = ({
                                   key={c.id}
                                       className="w-5/6"
                                       course={c}
-                                      onClick={onSelect}
+                                      onClick={() => onSelect(c)}
                                   />
                               ))
                             : "looks like you have no courses..."}

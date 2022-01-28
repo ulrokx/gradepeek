@@ -1,7 +1,6 @@
-import { ChromeTab } from "./ChromeTab";
-import { dateDiffDays } from "./dateDiffDays";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { ChromeTab } from "./ChromeTab";
 dayjs.extend(relativeTime);
 
 export const Todos = ({ items, url }) => {
@@ -26,7 +25,7 @@ export const Todos = ({ items, url }) => {
                                   </ChromeTab>
                               </div>
                               <p
-                                  className={`rounded-b-lg inline-block text-sm font-semibold text-[.75rem] ${
+                                  className={`rounded-b-lg inline-block text-sm font-semibold text-[.75rem] px-2 ${
                                       daystill >= 5
                                           ? "bg-green-500"
                                           : daystill >= 4

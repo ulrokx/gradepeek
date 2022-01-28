@@ -23,7 +23,7 @@ export const CourseItem: React.FC<CourseItemProps> = ({
                 <ChromeTab
                     className={`${styles} ${className}`}
                     href={url ? `${url}/courses/${c.id}` : ""}
-                    onClick={() => onClick(c)}
+                    onClick={onClick}
                 >
                     {c.course_code}
                 </ChromeTab>

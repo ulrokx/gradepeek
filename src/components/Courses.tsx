@@ -13,7 +13,6 @@ export const Courses: React.FC<ICoursesProps> = ({ courses, url, options, hidden
         <ul className="w-5/6">
             {courses
                 ? courses.map((c: ICourse) => {
-                    console.log("chidden", hidden)
                     if(hidden.includes(c.id)) return
                       return (
                           <li

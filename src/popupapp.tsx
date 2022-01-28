@@ -50,11 +50,6 @@ export const App = () => {
                             errors: false,
                         },
                     });
-                    console.log(
-                        res.courseName,
-                        res.gradeName,
-                        res.hiddenCourses
-                    );
                     dispatch({
                         type: "setOptions",
                         payload: {
@@ -119,7 +114,6 @@ export const App = () => {
                 return;
             }
             if (data) {
-                console.log(data);
                 dispatch({
                     type: "setData",
                     payload: {
@@ -169,7 +163,6 @@ export const App = () => {
         setPage("Main");
     };
     const handleLogOut = () => {
-        console.log("here");
         dispatch({
             type: "logOut",
         });
@@ -220,7 +213,11 @@ export const App = () => {
                         ? "Grey"
                         : "Black"
                 }
-                className={`absolute top-px right-4  ${page=="Loading" ? null : "hover:scale-110 hover:animate-spin hover:cursor-pointer"}`}
+                className={`absolute top-px right-4  ${
+                    page == "Loading"
+                        ? null
+                        : "hover:scale-110 hover:animate-spin hover:cursor-pointer"
+                }`}
                 size={25}
                 onClick={() => {
                     if (page == "Loading") return;
@@ -250,7 +247,10 @@ export const App = () => {
             ) : page == "HideCourses" ? (
                 <HideCourses
                     courses={state.courses}
-                    onBack={() => setPage("Settings")}
+                    onBack={() => {
+                        setPage("Settings");
+                        setTab("Courses");
+                    }}
                     onChangeHidden={handleChangeHidden}
                     hidden={state.options.hiddenCourses}
                 />

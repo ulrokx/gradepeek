@@ -16,7 +16,6 @@ export const HideCourses: React.FC<HideCoursesProps> = ({
     onBack,
     hidden,
 }) => {
-    console.log(courses, hidden);
     return (
         <>
         <div className="flex flex-row justify-between gap-x-1">
