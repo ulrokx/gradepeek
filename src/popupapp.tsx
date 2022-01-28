@@ -205,7 +205,7 @@ export const App = () => {
             <h1 className="mt-3 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800 self-start ml-5 select-none">
                 Gradepeek Canvas
             </h1>
-            <IoSettings
+           {page != "Inputs" ? <IoSettings
                 color={
                     page == "Settings"
                         ? "Green"
@@ -223,7 +223,7 @@ export const App = () => {
                     if (page == "Loading") return;
                     setPage((p) => (p == "Settings" ? "Main" : "Settings"));
                 }}
-            />
+            />: null}
             {page == "Loading" ? (
                 <div className="py-28">
                     <BallTriangle color="#ff0000" height={120} width={120} />

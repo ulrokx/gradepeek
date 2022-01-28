@@ -9,7 +9,7 @@ interface IGradesProps {
 }
 export const Grades:React.FC<IGradesProps> = ({ ctg: courses, url, options, hidden }) => {
     return (
-        <ul className="w-5/6">
+        <ul className="w-full px-6 overflow-auto scrollbar scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-blue-300">
             {courses
                 ? courses.map((c) => {
                     if(hidden.includes(c.id)) return
