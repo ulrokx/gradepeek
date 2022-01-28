@@ -5,12 +5,14 @@ interface IGradesProps {
     ctg: Array<ICGrades>
     url: string
     options: IOptions
+    hidden: Array<number>
 }
-export const Grades:React.FC<IGradesProps> = ({ ctg: courses, url, options }) => {
+export const Grades:React.FC<IGradesProps> = ({ ctg: courses, url, options, hidden }) => {
     return (
         <ul className="w-5/6">
             {courses
                 ? courses.map((c) => {
+                    if(hidden.includes(c.id)) return
                       return (
                           <li key={c.id}>
                               <div className="flex flex-row justify-between">

@@ -37,6 +37,7 @@ export interface IOptions {
     courseName?: "Name" | "Code";
     gradeName?: "Name" | "Code";
     hiddenCourses?: Array<number>;
+    hiddenCourse?: number;
 }
 
 interface ReducerAction {
@@ -47,7 +48,9 @@ interface ReducerAction {
         | "setTermID"
         | "setData"
         | "logOut"
-        | "setOptions";
+        | "setOptions"
+        | "addHidden"
+        | "removeHidden";
     payload?: {
         apiKey?: string;
         schoolUrl?: string;
@@ -62,6 +65,7 @@ interface ReducerAction {
         options?: {
             courseName?: "Name" | "Code";
             gradeName?: "Name" | "Code";
+            hiddenCourse?: number;
             hiddenCourses?: Array<number>;
         };
     };
@@ -125,16 +129,16 @@ export const PopupReducer = (
                 ...initialState,
             };
         case "setOptions":
-            const { courseName, hiddenCourses, gradeName } =
+            const { courseName, gradeName, hiddenCourses } =
                 action.payload.options;
             if (courseName) {
                 chrome.storage.sync.set({ courseName });
             }
-            if (hiddenCourses) {
-                chrome.storage.sync.set({ hiddenCourses });
-            }
             if (gradeName) {
                 chrome.storage.sync.set({ gradeName });
+            }
+            if (hiddenCourses) {
+                chrome.storage.sync.set({ hiddenCourses }); //hm
             }
             return {
                 ...state,
@@ -146,6 +150,30 @@ export const PopupReducer = (
                     hiddenCourses: hiddenCourses
                         ? hiddenCourses
                         : state.options.hiddenCourses,
+                },
+            };
+        case "addHidden":
+            const id = action.payload.options.hiddenCourse;
+            const newArr = [...state.options.hiddenCourses, id];
+            chrome.storage.sync.set({ hiddenCourses: newArr });
+            return {
+                ...state,
+                options: {
+                    hiddenCourses: newArr,
+                },
+            };
+        case "removeHidden":
+            const toRemove = action.payload.options.hiddenCourse;
+            const newerArr = state.options.hiddenCourses.filter(
+                (c) => c != toRemove
+            );
+            chrome.storage.sync.set({hiddenCourses: newerArr})
+            return {
+                ...state,
+                options: {
+                    hiddenCourses: state.options.hiddenCourses.filter(
+                        (c) => c != toRemove
+                    ),
                 },
             };
     }

@@ -7,6 +7,7 @@ import { Grades } from "./components/Grades";
 import { Tabs } from "./components/Tabs";
 import { Todos } from "./components/Todos";
 import { UserBlip } from "./components/UserBlip";
+import { HideCourses } from "./pages/HideCourses";
 import { InputPage } from "./pages/InputPage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { TermSelect } from "./pages/TermSelect";
@@ -15,11 +16,17 @@ import { makeUrls } from "./util/makeUrls";
 import { initialState, IOptions, PopupReducer } from "./util/popupreducer";
 import { ICourse, ISettingsState } from "./util/types/generated";
 type ITabs = "Courses" | "Todos" | "Grades";
-type IPages = "Inputs" | "TermSelect" | "Main" | "Loading" | "Settings";
+type IPages =
+    | "Inputs"
+    | "TermSelect"
+    | "Main"
+    | "Loading"
+    | "Settings"
+    | "HideCourses";
 export const App = () => {
     const [state, dispatch] = useReducer(PopupReducer, initialState);
     const [apiInput, setApiInput] = useState("");
-    const [tab, setTab] = useState<ITabs>("Courses");
+    const [tab, setTab] = useState<ITabs>("Todos");
     const [schoolInput, setSchoolInput] = useState("");
     const [page, setPage] = useState<IPages>("Loading");
     useEffect(() => {
@@ -43,13 +50,20 @@ export const App = () => {
                             errors: false,
                         },
                     });
+                    console.log(
+                        res.courseName,
+                        res.gradeName,
+                        res.hiddenCourses
+                    );
                     dispatch({
                         type: "setOptions",
                         payload: {
                             options: {
                                 courseName: res.courseName,
                                 gradeName: res.gradeName,
-                                hiddenCourses: res.hiddenCourses,
+                                hiddenCourses: res.hiddenCourses
+                                    ? res.hiddenCourses
+                                    : [],
                             },
                         },
                     });
@@ -136,7 +150,7 @@ export const App = () => {
         chrome.storage.sync.set({ schoolInput: event.target.value });
     };
     const handleCourseSelect = async (course: ICourse) => {
-        setPage("Loading")
+        setPage("Loading");
         const termID = course.enrollment_term_id;
         chrome.storage.sync.set({ termID });
         dispatch({
@@ -160,8 +174,8 @@ export const App = () => {
             type: "logOut",
         });
         setPage("Inputs");
-        setSchoolInput(state.schoolUrl)
-        setApiInput(state.apiKey)
+        setSchoolInput(state.schoolUrl);
+        setApiInput(state.apiKey);
         chrome.storage.sync.clear();
     };
     const onSettingsChange = (opts: IOptions) => {
@@ -172,18 +186,46 @@ export const App = () => {
             },
         });
     };
+    const handleChangeHidden = (id: number) => {
+        if (state.options.hiddenCourses.includes(id)) {
+            dispatch({
+                type: "removeHidden",
+                payload: {
+                    options: {
+                        hiddenCourse: id,
+                    },
+                },
+            });
+        } else {
+            dispatch({
+                type: "addHidden",
+                payload: {
+                    options: {
+                        hiddenCourse: id,
+                    },
+                },
+            });
+        }
+    };
     return (
         <div className="flex flex-col space-y-4 items-center bg-red-100 h-screen justify-top">
-            <h1 className="mt-3 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800 self-start ml-5">
+            <h1 className="mt-3 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800 self-start ml-5 select-none">
                 Gradepeek Canvas
             </h1>
             <IoSettings
-            color={page=="Settings" ? "Green" : "Black"}
-                className={`absolute top-px right-4 hover:scale-110 hover:animate-spin hover:cursor-pointer`}
-                size={25}
-                onClick={() =>
-                    setPage((p) => (p == "Settings" ? "Main" : "Settings"))
+                color={
+                    page == "Settings"
+                        ? "Green"
+                        : page == "Loading"
+                        ? "Grey"
+                        : "Black"
                 }
+                className={`absolute top-px right-4  ${page=="Loading" ? null : "hover:scale-110 hover:animate-spin hover:cursor-pointer"}`}
+                size={25}
+                onClick={() => {
+                    if (page == "Loading") return;
+                    setPage((p) => (p == "Settings" ? "Main" : "Settings"));
+                }}
             />
             {page == "Loading" ? (
                 <div className="py-28">
@@ -203,6 +245,14 @@ export const App = () => {
                     settingsState={state.options}
                     onChange={onSettingsChange}
                     onLogout={handleLogOut}
+                    onHide={() => setPage("HideCourses")}
+                />
+            ) : page == "HideCourses" ? (
+                <HideCourses
+                    courses={state.courses}
+                    onBack={() => setPage("Settings")}
+                    onChangeHidden={handleChangeHidden}
+                    hidden={state.options.hiddenCourses}
                 />
             ) : page == "TermSelect" ? (
                 <TermSelect
@@ -237,12 +287,14 @@ export const App = () => {
                             courses={state.courses}
                             url={state.urls.base}
                             options={state.options}
+                            hidden={state.options.hiddenCourses}
                         />
                     ) : tab == "Grades" ? (
                         <Grades
                             ctg={state.grades}
                             url={state.urls.base}
                             options={state.options}
+                            hidden={state.options.hiddenCourses}
                         />
                     ) : (
                         <Todos items={state.todos} url={state.urls.base} />

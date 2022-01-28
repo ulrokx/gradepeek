@@ -6,12 +6,15 @@ interface ICoursesProps {
     courses: Array<ICourse>;
     url: string;
     options: IOptions
+    hidden: Array<number>
 }
-export const Courses: React.FC<ICoursesProps> = ({ courses, url, options }) => {
+export const Courses: React.FC<ICoursesProps> = ({ courses, url, options, hidden }) => {
     return (
         <ul className="w-5/6">
             {courses
                 ? courses.map((c: ICourse) => {
+                    console.log("chidden", hidden)
+                    if(hidden.includes(c.id)) return
                       return (
                           <li
                               className="flex flex-column justify-center gap-1"

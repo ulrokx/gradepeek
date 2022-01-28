@@ -40,7 +40,7 @@ export const UserBlip: React.FC<IUserBlip> = ({ user, onLogOut }) => {
                     Logout?
                 </div>
             )}
-            <h2 className="text-lg ">
+            <h2 className="text-lg select-none">
                 Hi <span className="font-medium">{user.name}</span>, today is{" "}
                 {date}
             </h2>

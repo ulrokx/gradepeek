@@ -28,6 +28,7 @@ export const queryCanvas = async <ResponseType>(
             Accept: "*/*",
             "Target-URL": localUrl.href,
             "Slow-Mode-Debug": debug ? "true" : "false",
+            "Version": "0.0.3"
         },
     });
     if (response.ok) {
