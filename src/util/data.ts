@@ -83,7 +83,7 @@ export const getGrades = async (
         url,
         apiKey
     );
-    const ctg = [];
+    const ctg: Array<ICGrades> = [];
     if (data) {
         data.forEach((e) => {
             courses.forEach((c) => {
@@ -94,6 +94,7 @@ export const getGrades = async (
                         grade: e.grades.current_score,
                         final: e.grades.final_score,
                         letter: e.grades.current_grade,
+                        code: c.course_code
                     });
                 }
             });

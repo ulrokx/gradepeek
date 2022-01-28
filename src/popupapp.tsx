@@ -12,8 +12,8 @@ import { SettingsPage } from "./pages/SettingsPage";
 import { TermSelect } from "./pages/TermSelect";
 import { getCourses, getData, getUser } from "./util/data";
 import { makeUrls } from "./util/makeUrls";
-import { initialState, PopupReducer } from "./util/popupreducer";
-import { ICourse } from "./util/types/generated";
+import { initialState, IOptions, PopupReducer } from "./util/popupreducer";
+import { ICourse, ISettingsState } from "./util/types/generated";
 type ITabs = "Courses" | "Todos" | "Grades";
 type IPages = "Inputs" | "TermSelect" | "Main" | "Loading" | "Settings";
 export const App = () => {
@@ -24,7 +24,14 @@ export const App = () => {
     const [page, setPage] = useState<IPages>("Loading");
     useEffect(() => {
         chrome.storage.sync.get(
-            ["capikey", "schoolurl", "termID"],
+            [
+                "capikey",
+                "schoolurl",
+                "termID",
+                "courseName",
+                "gradeName",
+                "hiddenCourses",
+            ],
             async (res) => {
                 if (res.capikey && res.schoolurl && res.termID) {
                     dispatch({
@@ -34,6 +41,16 @@ export const App = () => {
                             schoolUrl: res.schoolurl,
                             termID: res.termID,
                             errors: false,
+                        },
+                    });
+                    dispatch({
+                        type: "setOptions",
+                        payload: {
+                            options: {
+                                courseName: res.courseName,
+                                gradeName: res.gradeName,
+                                hiddenCourses: res.hiddenCourses,
+                            },
                         },
                     });
                     const data = await getData(
@@ -48,7 +65,7 @@ export const App = () => {
                             urls: data.madeURLs,
                         },
                     });
-                    setPage("Settings");
+                    setPage("Main");
                 } else {
                     //needs to onboard
                     setPage("Inputs");
@@ -119,6 +136,7 @@ export const App = () => {
         chrome.storage.sync.set({ schoolInput: event.target.value });
     };
     const handleCourseSelect = async (course: ICourse) => {
+        setPage("Loading")
         const termID = course.enrollment_term_id;
         chrome.storage.sync.set({ termID });
         dispatch({
@@ -142,18 +160,31 @@ export const App = () => {
             type: "logOut",
         });
         setPage("Inputs");
-        chrome.storage.sync.get(["apiInput, schoolInput"], (res) => {
-            if (res.apiInput && res.schoolInput) setApiInput(res.apiIput);
-            setSchoolInput(res.schoolInput);
-        });
+        setSchoolInput(state.schoolUrl)
+        setApiInput(state.apiKey)
         chrome.storage.sync.clear();
+    };
+    const onSettingsChange = (opts: IOptions) => {
+        dispatch({
+            type: "setOptions",
+            payload: {
+                options: opts,
+            },
+        });
     };
     return (
         <div className="flex flex-col space-y-4 items-center bg-red-100 h-screen justify-top">
-            <h1 className="pr-2 mt-2 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800">
+            <h1 className="mt-3 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800 self-start ml-5">
                 Gradepeek Canvas
             </h1>
-            <IoSettings className="absolute top-0 right-2" size={25} />
+            <IoSettings
+            color={page=="Settings" ? "Green" : "Black"}
+                className={`absolute top-px right-4 hover:scale-110 hover:animate-spin hover:cursor-pointer`}
+                size={25}
+                onClick={() =>
+                    setPage((p) => (p == "Settings" ? "Main" : "Settings"))
+                }
+            />
             {page == "Loading" ? (
                 <div className="py-28">
                     <BallTriangle color="#ff0000" height={120} width={120} />
@@ -168,7 +199,11 @@ export const App = () => {
                     onSubmit={handleSubmit}
                 />
             ) : page == "Settings" ? (
-                <SettingsPage />
+                <SettingsPage
+                    settingsState={state.options}
+                    onChange={onSettingsChange}
+                    onLogout={handleLogOut}
+                />
             ) : page == "TermSelect" ? (
                 <TermSelect
                     error={state.errors}
@@ -201,9 +236,14 @@ export const App = () => {
                         <Courses
                             courses={state.courses}
                             url={state.urls.base}
+                            options={state.options}
                         />
                     ) : tab == "Grades" ? (
-                        <Grades ctg={state.grades} url={state.urls.base} />
+                        <Grades
+                            ctg={state.grades}
+                            url={state.urls.base}
+                            options={state.options}
+                        />
                     ) : (
                         <Todos items={state.todos} url={state.urls.base} />
                     )}{" "}

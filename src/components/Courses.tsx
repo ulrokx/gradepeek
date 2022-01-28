@@ -1,11 +1,13 @@
 import * as React from "react";
+import { IOptions } from "../util/popupreducer";
 import { ICourse } from "../util/types/generated";
 import { ChromeTab } from "./ChromeTab";
-interface ICourses {
+interface ICoursesProps {
     courses: Array<ICourse>;
     url: string;
+    options: IOptions
 }
-export const Courses = ({ courses, url }) => {
+export const Courses: React.FC<ICoursesProps> = ({ courses, url, options }) => {
     return (
         <ul className="w-5/6">
             {courses
@@ -19,7 +21,7 @@ export const Courses = ({ courses, url }) => {
                                   className="px-2 py-1 my-1 rounded-lg bg-blue-200 hover:bg-blue-500 transition-all font-semibold w-full text-center cursor-pointer hover:scale-105"
                                   href={`${url}/courses/${c.id}`}
                               >
-                                  {c.course_code}
+                                  {options.courseName == "Name" ? c.name : c.course_code}
                               </ChromeTab>
                           </li>
                       );

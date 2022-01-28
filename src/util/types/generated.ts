@@ -143,4 +143,13 @@ export interface ICGrades {
     name: string;
     grade: number;
     id: number;
+    code: string;
+    final: number;
+    letter: string;
+}
+
+export interface ISettingsState {
+    coursesName: "Code" | "Name";
+    gradesName: "Code" | "Name";
+    hiddenCourses: Array<number>
 }

@@ -1,6 +1,12 @@
+import { IOptions } from "../util/popupreducer";
+import { ICGrades, ICourse } from "../util/types/generated";
 import { ChromeTab } from "./ChromeTab";
-
-export const Grades = ({ ctg: courses, url }) => {
+interface IGradesProps {
+    ctg: Array<ICGrades>
+    url: string
+    options: IOptions
+}
+export const Grades:React.FC<IGradesProps> = ({ ctg: courses, url, options }) => {
     return (
         <ul className="w-5/6">
             {courses
@@ -12,7 +18,7 @@ export const Grades = ({ ctg: courses, url }) => {
                                       className="px-2 py-1 my-1 rounded-lg basis-5/6 bg-blue-200 hover:bg-blue-500 transition-all font-semibold text-center cursor-pointer focus:grow hover:scale-105"
                                       href={`${url}/courses/${c.id}/grades`}
                                   >
-                                      {c.name}
+                                      {options.gradeName == "Name" ? c.name : c.code}
                                   </ChromeTab>
                                   <p
                                       className={`px-2 py-1 my-1 rounded-lg text-center font-semibold ${

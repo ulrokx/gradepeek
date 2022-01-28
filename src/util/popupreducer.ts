@@ -1,5 +1,5 @@
 import { makeUrls } from "./makeUrls";
-import { ICGrades, ICourse, IEnrollment, IEnrollments, IEvent, IUser } from "./types/generated";
+import { ICGrades, ICourse, IEvent, IUser } from "./types/generated";
 
 export const initialState: IState = {
     courses: [], //async
@@ -11,20 +11,32 @@ export const initialState: IState = {
     errors: false,
     user: {},
     allCourses: [],
-    termID: null
+    termID: null,
+    options: {
+        courseName: "Code",
+        gradeName: "Name",
+        hiddenCourses: [],
+    },
 };
 
 type IState = {
-    courses: Array<ICourse> | [],
-    todos: Array<IEvent> | [],
-    grades: Array<ICGrades> | [],
-    apiKey: string | "",
-    schoolUrl: string | "",
-    urls: ReturnType<typeof makeUrls> | null,
-    errors: boolean,
-    user: IUser | {},
-    allCourses: Array<ICourse> | []
-    termID: number | null
+    courses: Array<ICourse> | [];
+    todos: Array<IEvent> | [];
+    grades: Array<ICGrades> | [];
+    apiKey: string | "";
+    schoolUrl: string | "";
+    urls: ReturnType<typeof makeUrls> | null;
+    errors: boolean;
+    user: IUser | {};
+    allCourses: Array<ICourse> | [];
+    termID: number | null;
+    options: IOptions;
+};
+
+export interface IOptions {
+    courseName?: "Name" | "Code";
+    gradeName?: "Name" | "Code";
+    hiddenCourses?: Array<number>;
 }
 
 interface ReducerAction {
@@ -35,6 +47,7 @@ interface ReducerAction {
         | "setTermID"
         | "setData"
         | "logOut"
+        | "setOptions";
     payload?: {
         apiKey?: string;
         schoolUrl?: string;
@@ -43,9 +56,14 @@ interface ReducerAction {
         todos?: Array<IEvent>;
         grades?: Array<ICGrades>;
         urls?: ReturnType<typeof makeUrls>;
-        allCourses?: Array<ICourse>
-        termID?: number,
-        errors?: boolean
+        allCourses?: Array<ICourse>;
+        termID?: number;
+        errors?: boolean;
+        options?: {
+            courseName?: "Name" | "Code";
+            gradeName?: "Name" | "Code";
+            hiddenCourses?: Array<number>;
+        };
     };
 }
 
@@ -59,7 +77,7 @@ export const PopupReducer = (
                 ...state,
                 apiKey: action.payload.apiKey,
                 schoolUrl: action.payload.schoolUrl,
-                termID: action.payload.termID
+                termID: action.payload.termID,
             };
         case "setURLs":
             return {
@@ -74,10 +92,21 @@ export const PopupReducer = (
         case "setTermID":
             return {
                 ...state,
-                termID: action.payload.termID
-            }
+                termID: action.payload.termID,
+            };
         case "setData":
-            const {courses, allCourses, grades, todos, user, apiKey, schoolUrl, termID, urls, errors} = action.payload
+            const {
+                courses,
+                allCourses,
+                grades,
+                todos,
+                user,
+                apiKey,
+                schoolUrl,
+                termID,
+                urls,
+                errors,
+            } = action.payload;
             return {
                 ...state,
                 courses: courses ? courses : state.courses,
@@ -89,11 +118,35 @@ export const PopupReducer = (
                 schoolUrl: schoolUrl ? schoolUrl : state.schoolUrl,
                 termID: termID ? termID : state.termID,
                 urls: urls ? urls : state.urls,
-                errors: errors ? errors : state.errors
-            }
+                errors: errors ? errors : state.errors,
+            };
         case "logOut":
             return {
-                ...initialState
+                ...initialState,
+            };
+        case "setOptions":
+            const { courseName, hiddenCourses, gradeName } =
+                action.payload.options;
+            if (courseName) {
+                chrome.storage.sync.set({ courseName });
             }
+            if (hiddenCourses) {
+                chrome.storage.sync.set({ hiddenCourses });
+            }
+            if (gradeName) {
+                chrome.storage.sync.set({ gradeName });
+            }
+            return {
+                ...state,
+                options: {
+                    courseName: courseName
+                        ? courseName
+                        : state.options.courseName,
+                    gradeName: gradeName ? gradeName : state.options.gradeName,
+                    hiddenCourses: hiddenCourses
+                        ? hiddenCourses
+                        : state.options.hiddenCourses,
+                },
+            };
     }
 };
