@@ -15,7 +15,7 @@ import { getCourses, getData, getUser } from "./util/data";
 import { makeUrls } from "./util/makeUrls";
 import { initialState, IOptions, PopupReducer } from "./util/popupreducer";
 import { ICourse, ISettingsState } from "./util/types/generated";
-type ITabs = "Courses" | "Todos" | "Grades";
+type ITabs = "Courses" | "To-Do" | "Grades";
 type IPages =
     | "Inputs"
     | "TermSelect"
@@ -26,7 +26,7 @@ type IPages =
 export const App = () => {
     const [state, dispatch] = useReducer(PopupReducer, initialState);
     const [apiInput, setApiInput] = useState("");
-    const [tab, setTab] = useState<ITabs>("Todos");
+    const [tab, setTab] = useState<ITabs>("To-Do");
     const [schoolInput, setSchoolInput] = useState("");
     const [page, setPage] = useState<IPages>("Loading");
     useEffect(() => {

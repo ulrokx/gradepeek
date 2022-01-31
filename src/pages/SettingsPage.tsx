@@ -73,7 +73,8 @@ export const SettingsPage: React.FC<ISettingsProps> = ({
                     </div>
                 </div>
                 <Button className="mt-auto" chromeHref={"https://chrome.google.com/webstore/detail/gradepeek/omejkieijjncolaijiaofblaldkhbcam/reviews"} >Leave a review</Button>
-                {/* <Button>Report an issue</Button> */}
+                <Button chromeHref="https://arcane-shore-95043.herokuapp.com/">Visit website</Button>
+                <Button chromeHref="https://arcane-shore-95043.herokuapp.com/feedback">Report an issue</Button>
                 <Button
                     className="bg-red-500 text-white hover:bg-red-600"
                     onClick={onLogout}

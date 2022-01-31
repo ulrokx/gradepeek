@@ -14,7 +14,7 @@ export const UserBlip: React.FC<IUserBlip> = ({ user, onLogOut }) => {
     };
     const date = dayjs().format("dddd[,] MMMM D");
     return (
-        <div className="flex justify-between items-center space-x-4 pl-2">
+        <div className="flex justify-between items-center space-x-4 px-2">
             <img
                 src={Placeholder}
                 alt="placeholder"
@@ -40,8 +40,8 @@ export const UserBlip: React.FC<IUserBlip> = ({ user, onLogOut }) => {
                     Logout?
                 </div>
             )}
-            <h2 className="text-lg select-none">
-                Hi <span className="font-medium">{user.name}</span>, today is{" "}
+            <h2 className="text-lg select-none break-normal">
+                Hi <span className="font-medium">George Washington</span>, today is{" "}
                 {date}
             </h2>
         </div>
