@@ -14,7 +14,7 @@ export const Todos = ({ items, url }) => {
                           "d",
                           true
                       );
-                      console.log(daystill)
+                      console.log(daystill);
                       const till = dayjs().to(dayjs(i.assignment.due_at));
                       return (
                           <li key={v} className="justify-center gap-1 flex-col">
@@ -40,7 +40,10 @@ export const Todos = ({ items, url }) => {
                                           : "bg-red-500"
                                   }`}
                               >
-                                  {dayjs(i.assignment.due_at).format("dddd[,] h[:]mm a")}, {till}
+                                  {dayjs(i.assignment.due_at).format(
+                                      "dddd[,] h[:]mm a"
+                                  )}
+                                  , {till}
                               </p>
                           </li>
                       );

@@ -1,5 +1,5 @@
 export const Tabs = ({ selected, changeTab }) => {
-    const tabs = ["Courses", "Todos", "Grades"];
+    const tabs = ["Courses", "To-Do", "Grades"]; //changed from todos to to-do
     return (
         <ul className="flex flex-row border-b-2 border-gray-500 ">
             {tabs.map((t) => {

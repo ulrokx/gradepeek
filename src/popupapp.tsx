@@ -205,7 +205,7 @@ export const App = () => {
             <h1 className="mt-3 subpixel-antialiased text-2xl font-semibold tracking-wider text-slate-800 self-start ml-5 select-none">
                 Gradepeek Canvas
             </h1>
-           {page != "Inputs" ? <IoSettings
+           {page != "Inputs" && page != "TermSelect" ? <IoSettings
                 color={
                     page == "Settings"
                         ? "Green"
