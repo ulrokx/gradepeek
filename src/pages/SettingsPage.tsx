@@ -81,7 +81,7 @@ export const SettingsPage: React.FC<ISettingsProps> = ({
                 >
                     Log Out
                 </Button>
-                <p className="text-center select-none">v0.0.3</p>
+                <p className="text-center select-none">v0.0.5</p>
             </div>
         </div>
     );
