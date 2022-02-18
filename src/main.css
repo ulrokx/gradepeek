@@ -998,6 +998,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   outline-color: #ef4444;
 }
 
+.focus\:outline-red-900:focus {
+  outline-color: #7f1d1d;
+}
+
 .hover\:scale-110:hover {
   --tw-scale-x: 1.1;
   --tw-scale-y: 1.1;
