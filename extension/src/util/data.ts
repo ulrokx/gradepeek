@@ -7,7 +7,7 @@ import {
     IEnrollments,
     IEvent,
     IUser,
-} from "./types/generated";
+} from "./types/generated"; 
 const emptyParams = new URLSearchParams();
 const pagesParams = new URLSearchParams([
     ["page", "1"],

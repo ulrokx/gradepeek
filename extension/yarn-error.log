@@ -1,0 +1,71 @@
+Arguments: 
+  /usr/bin/node /home/ricky/.yarn/bin/yarn.js
+
+PATH: 
+  /home/ricky/.opam/cs3110/bin:/home/ricky/.yarn/bin:/home/ricky/.config/yarn/global/node_modules/.bin:/home/ricky/bin:/usr/local/bin:/home/ricky/.opam/cs3110/bin:/home/ricky/.yarn/bin:/home/ricky/.config/yarn/global/node_modules/.bin:/home/ricky/.cabal/bin:/home/ricky/.ghcup/bin:/home/ricky/bin:/usr/local/bin:/home/ricky/bin:/home/ricky/.cargo/bin:/home/ricky/.npm-global/bin:/home/ricky/.local/bin:/home/ricky/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  17.9.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/ricky/Documents/projects/gradepeek/package.json: Unexpected token } in JSON at position 481
+      at JSON.parse (<anonymous>)
+      at /home/ricky/.yarn/lib/cli.js:1629:59
+      at Generator.next (<anonymous>)
+      at step (/home/ricky/.yarn/lib/cli.js:310:30)
+      at /home/ricky/.yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "gradepeek",
+    "version": "1.0.0",
+    "license": "MIT",
+    "devDependencies": {
+      "@parcel/config-webextension": "^2.2.1",
+      "@types/chrome": "^0.0.176",
+      "@types/react": "^17.0.38",
+      "@types/react-dom": "^17.0.11",
+      "@types/tailwindcss": "^3.0.2",
+      "autoprefixer": "^10.4.2",
+      "concurrently": "^7.0.0",
+      "crx-hotreload": "^1.0.6",
+      "eslint": "^8.7.0",
+      "postcss": "^8.4.5",
+      "tailwind-scrollbar": "^1.3.1",
+      "tailwindcss": "^3.0.15",
+    },
+    "targets": {
+      "webext-dev": {
+        "sourceMap": {
+          "inline": true,
+          "inlineSources": true
+        }
+      },
+      "webext-prod": {}
+    },
+    "scripts": {
+      "dev": "NODE_ENV=development parcel watch src/manifest.json --host localhost --target webext-dev --no-hmr --config @parcel/config-webextension",
+      "build": "yarn tailwindcss -c tailwind.config.js -o src/main.css && parcel build src/manifest.json --target webext-prod --config @parcel/config-webextension",
+      "watch": "NODE_ENV=development yarn tailwindcss --watch -c tailwind.config.js -o src/main.css"
+    },
+    "dependencies": {
+      "dayjs": "^1.10.7",
+      "parcel": "^2.2.1",
+      "react": "^17.0.2",
+      "react-dom": "^17.0.2",
+      "react-icons": "^4.3.1",
+      "react-loader-spinner": "^5.0.10"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile
