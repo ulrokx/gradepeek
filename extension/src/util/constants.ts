@@ -1,1 +1,1 @@
-export const PROXY_URL = "https://arcane-shore-95043.herokuapp.com/proxy"
+export const PROXY_URL = "https://gradepeek-cors.fly.dev/proxy"

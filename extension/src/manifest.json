@@ -1,7 +1,7 @@
 {
     "name": "Gradepeek",
     "description": "See Canvas without being in Canvas",
-    "version": "0.0.5",
+    "version": "0.2.0",
     "manifest_version": 3,
     "action": {
         "default_title": "Gradepeek",

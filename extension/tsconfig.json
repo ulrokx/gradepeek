@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "lib": ["es5", "es6", "DOM"],
+        "lib": ["ESNext", "DOM"],
         "jsx": "react-jsx",
         "allowJs": false,
         "allowUnreachableCode": false,

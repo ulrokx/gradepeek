@@ -1,6 +1,6 @@
-# fly.toml file generated for cors-gradepeek on 2022-11-03T17:20:45-04:00
+# fly.toml file generated for gradepeek-cors on 2022-12-07T07:54:47-05:00
 
-app = "cors-gradepeek"
+app = "gradepeek-cors"
 kill_signal = "SIGINT"
 kill_timeout = 5
 processes = []

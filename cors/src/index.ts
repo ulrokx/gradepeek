@@ -1,15 +1,15 @@
 import express from "express";
-import axios from "axios";
 import proxy from "./handlers/proxy";
 import dotenv from "dotenv";
-import { InstanceInitiatedShutdownBehavior } from "aws-cdk-lib/aws-ec2";
 import initDb from "./db/initDb";
+import cors from "cors"
 
 const PORT = process.env.PORT || 3000;
 
 const main = async () => {
   dotenv.config();
   const app = express();
+  app.use(cors())
 
   await initDb();
 

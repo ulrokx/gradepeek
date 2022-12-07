@@ -1,1 +1,0 @@
-{"name":"Gradepeek","description":"See Canvas without being in Canvas","version":"0.0.5","manifest_version":3,"action":{"default_title":"Gradepeek","default_popup":"popup.e7b3f33f.html"},"permissions":["storage"],"icons":{"16":"gp16.d39fe3e7.png","32":"gp32.5b642f78.png","48":"gp48.44f7d78a.png","128":"gp128.66633be8.png"}}

@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useReducer, useState } from "react";
 import { IoSettings } from "react-icons/io5";
 import { BallTriangle } from "react-loader-spinner";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import { Courses } from "./components/Courses";
 import { Grades } from "./components/Grades";
 import { Tabs } from "./components/Tabs";
