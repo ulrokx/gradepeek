@@ -17,8 +17,8 @@ const main = async () => {
   await initDb();
 
   
-  app.get("/version", (req, res) => {
-    res.send(process.env.VERSION);
+  app.get("/api/version", (req, res) => {
+    res.send(process.env.VERSION || "unknown");
   })
 
   app.get("/proxy", proxy);
