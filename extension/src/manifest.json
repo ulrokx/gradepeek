@@ -1,17 +1,17 @@
 {
-    "name": "Gradepeek",
-    "description": "See Canvas without being in Canvas",
-    "version": "0.2.0",
-    "manifest_version": 3,
-    "action": {
-        "default_title": "Gradepeek",
-        "default_popup": "popup.html"
-    },
-    "permissions": ["storage"],
-    "icons": {
-        "16": "assets/gp16.png",
-        "32": "assets/gp32.png",
-        "48": "assets/gp48.png",
-        "128": "assets/gp128.png"
-    }
+  "name": "Gradepeek",
+  "description": "See Canvas without being in Canvas",
+  "version": "0.2.0",
+  "manifest_version": 3,
+  "action": {
+    "default_title": "Gradepeek",
+    "default_popup": "popup.html"
+  },
+  "permissions": ["storage"],
+  "icons": {
+    "16": "assets/gp16.png",
+    "32": "assets/gp32.png",
+    "48": "assets/gp48.png",
+    "128": "assets/gp128.png"
+  }
 }

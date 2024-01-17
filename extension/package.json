@@ -29,7 +29,8 @@
   "scripts": {
     "dev": "NODE_ENV=development parcel watch src/manifest.json --host localhost --target webext-dev --no-hmr --config @parcel/config-webextension",
     "build": "yarn tailwindcss -c tailwind.config.js -o src/main.css && parcel build src/manifest.json --target webext-prod --config @parcel/config-webextension",
-    "watch": "NODE_ENV=development yarn tailwindcss --watch -c tailwind.config.js -o src/main.css"
+    "watch": "NODE_ENV=development yarn tailwindcss --watch -c tailwind.config.js -o src/main.css",
+    "format": "prettier -w ."
   },
   "dependencies": {
     "dayjs": "^1.10.7",

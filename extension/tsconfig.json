@@ -1,13 +1,13 @@
 {
-    "compilerOptions": {
-        "lib": ["ESNext", "DOM"],
-        "jsx": "react-jsx",
-        "allowJs": false,
-        "allowUnreachableCode": false,
-        "isolatedModules": true,
-        "module": "CommonJS",
-        "moduleResolution": "Node",
-        "allowSyntheticDefaultImports": true,
-        "esModuleInterop": true
-    }
+  "compilerOptions": {
+    "lib": ["ESNext", "DOM"],
+    "jsx": "react-jsx",
+    "allowJs": false,
+    "allowUnreachableCode": false,
+    "isolatedModules": true,
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true
+  }
 }
